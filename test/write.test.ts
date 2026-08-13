@@ -392,7 +392,7 @@ describe('carrier process writes', () => {
 
 		await expect(client.payCarrierOrder(PROCESS, reserved, { currentHeight: 100, inclusionMargin: 2 })).resolves.toEqual({ id: 'id-1' });
 		expect(s.txs[0]).toMatchObject({ target: SELLER, quantity: '100' });
-		expect(tagMap(s.txs[0]!.tags)).toEqual({ 'order-id': ORDER });
+		expect(tagMap(s.txs[0]!.tags)).toEqual({ 'order-id': ORDER, 'assign-to': PROCESS });
 	});
 
 	it('refuses to sign swap transactions when wallet balance cannot cover payment and L1 fees', async () => {
@@ -433,7 +433,7 @@ describe('carrier process writes', () => {
 		expect(s.txs).toHaveLength(2);
 		expect(tagMap(s.txs[0]!.tags)).toEqual({ action: 'register-interest', 'order-id': ORDER });
 		expect(s.txs[0]).toMatchObject({ target: PROCESS, quantity: '0', rewardFloor: '9' });
-		expect(tagMap(s.txs[1]!.tags)).toEqual({ 'order-id': ORDER });
+		expect(tagMap(s.txs[1]!.tags)).toEqual({ 'order-id': ORDER, 'assign-to': PROCESS });
 		expect(s.txs[1]).toMatchObject({ target: SELLER, quantity: '100' });
 	});
 });
