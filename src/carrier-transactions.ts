@@ -99,12 +99,16 @@ export function buildCarrierRegisterInterest(processId: string, order: SwapOrder
 	};
 }
 
-export function buildCarrierPayment(order: SwapOrder): TransactionMessage {
+export function buildCarrierPayment(processId: string, order: SwapOrder): TransactionMessage {
+	assertArweaveId(processId, 'invalid-carrier-process-id');
 	assertSafeCarrierPurchaseOrder(order);
 	return {
 		target: order.recipient,
 		quantity: order.asking,
-		tags: [{ name: 'order-id', value: order.orderId }],
+		tags: [
+			{ name: 'order-id', value: order.orderId },
+			...(order.recipient === processId ? [] : [{ name: 'assign-to', value: processId }]),
+		],
 	};
 }
 

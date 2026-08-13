@@ -750,7 +750,7 @@ export class ReferenceClient {
 			allowOpen: false,
 			allowReserved: true,
 		});
-		return this.sendCarrierTransaction(signer, buyer, buildCarrierPayment(live));
+		return this.sendCarrierTransaction(signer, buyer, buildCarrierPayment(processId, live));
 	}
 
 	/**
@@ -773,12 +773,12 @@ export class ReferenceClient {
 			allowReserved: true,
 		});
 		if (live.status === 'reserved') {
-			const payment = await this.sendCarrierTransaction(signer, buyer, buildCarrierPayment(live));
+			const payment = await this.sendCarrierTransaction(signer, buyer, buildCarrierPayment(processId, live));
 			return { paymentId: payment.id };
 		}
 
 		const registrationMessage = buildCarrierRegisterInterest(processId, live);
-		const paymentMessage = buildCarrierPayment(live);
+		const paymentMessage = buildCarrierPayment(processId, live);
 		await this.requireWalletBalance(buyer, [registrationMessage, paymentMessage]);
 		const registration = await this.sendCarrierTransaction(signer, buyer, registrationMessage);
 		await waitForCarrierState(
